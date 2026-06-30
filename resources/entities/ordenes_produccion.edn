@@ -1,0 +1,32 @@
+{:entity :ordenes_produccion
+ :title :entity/ordenes_produccion
+ :table "ordenes_produccion"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 70
+ :menu-icon "bi bi-tools"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :ordenes_produccion/codigo :type :text :required? true}
+          {:id :producto_id :label :ordenes_produccion/producto_id :type :fk :required? true
+           :fk :productos :fk-field [:codigo :nombre] :fk-separator " - "
+           :fk-sort [:codigo] :hidden-in-grid? true}
+          {:id :producto_nombre :label :ordenes_produccion/producto_id :type :text :grid-only? true}
+          {:id :cantidad :label :ordenes_produccion/cantidad :type :number :required? true}
+          {:id :fecha_inicio :label :ordenes_produccion/fecha_inicio :type :date}
+          {:id :fecha_fin :label :ordenes_produccion/fecha_fin :type :date}
+          {:id :estado :label :ordenes_produccion/estado :type :select :required? true :value "planificada"
+           :options [{:value "planificada" :label :status/planificada}
+                     {:value "en_proceso" :label :status/en_proceso}
+                     {:value "completada" :label :status/completada}
+                     {:value "cancelada" :label :status/cancelada}]}
+          {:id :notas :label :ordenes_produccion/notas :type :textarea}]
+
+ :queries {:list "SELECT o.*, p.codigo || ' - ' || p.nombre AS producto_nombre FROM ordenes_produccion o LEFT JOIN productos p ON o.producto_id = p.id ORDER BY o.id DESC"
+           :get "SELECT o.*, p.codigo || ' - ' || p.nombre AS producto_nombre FROM ordenes_produccion o LEFT JOIN productos p ON o.producto_id = p.id WHERE o.id = ?"}
+
+ :actions {:new true :edit true :delete true}}

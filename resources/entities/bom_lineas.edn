@@ -1,0 +1,28 @@
+{:entity :bom_lineas
+ :title :entity/bom_lineas
+ :table "bom_lineas"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 26
+ :menu-icon "bi bi-list-ul"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :bom_id :label :bom_lineas/bom_id :type :fk
+           :fk :bom :fk-field [:codigo] :fk-sort [:codigo]
+           :hidden-in-grid? true}
+          {:id :bom_codigo :label :bom_lineas/bom_id :type :text :grid-only? true}
+          {:id :material_id :label :bom_lineas/material_id :type :fk :required? true
+           :fk :materiales :fk-field [:codigo :nombre] :fk-separator " - "
+           :fk-sort [:codigo]}
+          {:id :cantidad :label :bom_lineas/cantidad :type :decimal :required? true}
+          {:id :desperdicio_porcentaje :label :bom_lineas/desperdicio_porcentaje :type :decimal}
+          {:id :notas :label :bom_lineas/notas :type :textarea}]
+
+ :queries {:list "SELECT l.*, b.codigo AS bom_codigo, m.codigo || ' - ' || m.nombre AS material_nombre FROM bom_lineas l LEFT JOIN bom b ON l.bom_id = b.id LEFT JOIN materiales m ON l.material_id = m.id ORDER BY l.id DESC"
+           :get "SELECT l.*, b.codigo AS bom_codigo, m.codigo || ' - ' || m.nombre AS material_nombre FROM bom_lineas l LEFT JOIN bom b ON l.bom_id = b.id LEFT JOIN materiales m ON l.material_id = m.id WHERE l.id = ?"}
+
+ :actions {:new true :edit true :delete true}}

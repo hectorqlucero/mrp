@@ -1,0 +1,33 @@
+{:entity :ordenes_compra
+ :title :entity/ordenes_compra
+ :table "ordenes_compra"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 40
+ :menu-icon "bi bi-cart"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :ordenes_compra/codigo :type :text :required? true}
+          {:id :proveedor_id :label :ordenes_compra/proveedor_id :type :fk :required? true
+           :fk :proveedores :fk-field [:codigo :nombre] :fk-separator " - "
+           :fk-sort [:codigo] :hidden-in-grid? true}
+          {:id :proveedor_nombre :label :ordenes_compra/proveedor_id :type :text :grid-only? true}
+          {:id :fecha :label :ordenes_compra/fecha :type :date}
+          {:id :fecha_entrega :label :ordenes_compra/fecha_entrega :type :date}
+          {:id :estado :label :ordenes_compra/estado :type :select :required? true :value "pendiente"
+           :options [{:value "pendiente" :label :status/pendiente}
+                     {:value "aprobada" :label :status/aprobada}
+                     {:value "recibida" :label :status/recibida}
+                     {:value "cancelada" :label :status/cancelada}]}
+          {:id :notas :label :ordenes_compra/notas :type :textarea}]
+
+ :queries {:list "SELECT o.*, p.codigo || ' - ' || p.nombre AS proveedor_nombre FROM ordenes_compra o LEFT JOIN proveedores p ON o.proveedor_id = p.id ORDER BY o.id DESC"
+           :get "SELECT o.*, p.codigo || ' - ' || p.nombre AS proveedor_nombre FROM ordenes_compra o LEFT JOIN proveedores p ON o.proveedor_id = p.id WHERE o.id = ?"}
+
+ :actions {:new true :edit true :delete true}
+ :subgrids [{:entity :oc_lineas :foreign-key :oc_id
+             :title :entity/oc_lineas :href "/admin/oc_lineas" :icon "bi bi-list-ul"}]}

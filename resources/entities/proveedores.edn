@@ -1,0 +1,29 @@
+{:entity :proveedores
+ :title :entity/proveedores
+ :table "proveedores"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 30
+ :menu-icon "bi bi-truck"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :proveedores/codigo :type :text :required? true}
+          {:id :nombre :label :proveedores/nombre :type :text :required? true}
+          {:id :contacto :label :proveedores/contacto :type :text}
+          {:id :telefono :label :proveedores/telefono :type :text}
+          {:id :email :label :proveedores/email :type :email}
+          {:id :direccion :label :proveedores/direccion :type :textarea}
+          {:id :activo :label :proveedores/activo :type :radio :value "T"
+           :options [{:value "T" :label :common/yes}
+                     {:value "F" :label :common/no}]}]
+
+ :queries {:list "SELECT * FROM proveedores ORDER BY id DESC"
+           :get "SELECT * FROM proveedores WHERE id = ?"}
+
+ :actions {:new true :edit true :delete true}
+ :subgrids [{:entity :ordenes_compra :foreign-key :proveedor_id
+             :title :entity/ordenes_compra :href "/admin/ordenes_compra" :icon "bi bi-cart"}]}

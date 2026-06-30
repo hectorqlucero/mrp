@@ -1,0 +1,28 @@
+{:entity :pedido_lineas
+ :title :entity/pedido_lineas
+ :table "pedido_lineas"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 61
+ :menu-icon "bi bi-list-ul"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :pedido_id :label :pedido_lineas/pedido_id :type :fk
+           :fk :pedidos :fk-field [:codigo] :fk-sort [:codigo]
+           :hidden-in-grid? true}
+          {:id :pedido_codigo :label :pedido_lineas/pedido_id :type :text :grid-only? true}
+          {:id :producto_id :label :pedido_lineas/producto_id :type :fk :required? true
+           :fk :productos :fk-field [:codigo :nombre] :fk-separator " - "
+           :fk-sort [:codigo]}
+          {:id :cantidad :label :pedido_lineas/cantidad :type :number :required? true}
+          {:id :precio_unitario :label :pedido_lineas/precio_unitario :type :decimal}
+          {:id :notas :label :pedido_lineas/notas :type :textarea}]
+
+ :queries {:list "SELECT l.*, p.codigo AS pedido_codigo, pr.codigo || ' - ' || pr.nombre AS producto_nombre FROM pedido_lineas l LEFT JOIN pedidos p ON l.pedido_id = p.id LEFT JOIN productos pr ON l.producto_id = pr.id ORDER BY l.id DESC"
+           :get "SELECT l.*, p.codigo AS pedido_codigo, pr.codigo || ' - ' || pr.nombre AS producto_nombre FROM pedido_lineas l LEFT JOIN pedidos p ON l.pedido_id = p.id LEFT JOIN productos pr ON l.producto_id = pr.id WHERE l.id = ?"}
+
+ :actions {:new true :edit true :delete true}}

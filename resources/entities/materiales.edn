@@ -1,0 +1,40 @@
+{:entity :materiales
+ :title :entity/materiales
+ :table "materiales"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 10
+ :menu-icon "bi bi-box-seam"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :materiales/codigo :type :text :required? true}
+          {:id :nombre :label :materiales/nombre :type :text :required? true}
+          {:id :descripcion :label :materiales/descripcion :type :textarea}
+          {:id :tipo :label :materiales/tipo :type :select :required? true :value "otro"
+           :options [{:value "madera" :label :materiales/tipo_madera}
+                     {:value "tela" :label :materiales/tipo_tela}
+                     {:value "espuma" :label :materiales/tipo_espuma}
+                     {:value "herraje" :label :materiales/tipo_herraje}
+                     {:value "otro" :label :materiales/tipo_otro}]}
+          {:id :unidad_medida :label :materiales/unidad_medida :type :select :required? true :value "pieza"
+           :options [{:value "m" :label :materiales/unidad_m}
+                     {:value "m2" :label :materiales/unidad_m2}
+                     {:value "kg" :label :materiales/unidad_kg}
+                     {:value "pieza" :label :materiales/unidad_pieza}
+                     {:value "litro" :label :materiales/unidad_litro}]}
+          {:id :costo_unitario :label :materiales/costo_unitario :type :decimal}
+          {:id :stock_actual :label :materiales/stock_actual :type :decimal}
+          {:id :stock_minimo :label :materiales/stock_minimo :type :decimal}
+          {:id :ubicacion :label :materiales/ubicacion :type :text}
+          {:id :activo :label :materiales/activo :type :radio :value "T"
+           :options [{:value "T" :label :common/yes}
+                     {:value "F" :label :common/no}]}]
+
+ :queries {:list "SELECT * FROM materiales ORDER BY id DESC"
+           :get "SELECT * FROM materiales WHERE id = ?"}
+
+ :actions {:new true :edit true :delete true}}

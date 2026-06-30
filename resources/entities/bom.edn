@@ -1,0 +1,29 @@
+{:entity :bom
+ :title :entity/bom
+ :table "bom"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 25
+ :menu-icon "bi bi-diagram-3"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :bom/codigo :type :text :required? true}
+          {:id :producto_id :label :bom/producto_id :type :fk
+           :fk :productos :fk-field [:codigo :nombre] :fk-separator " - "
+           :fk-sort [:codigo] :hidden-in-grid? true}
+          {:id :producto_nombre :label :bom/producto_id :type :text :grid-only? true}
+          {:id :descripcion :label :bom/descripcion :type :textarea}
+          {:id :activo :label :bom/activo :type :radio :value "T"
+           :options [{:value "T" :label :common/yes}
+                     {:value "F" :label :common/no}]}]
+
+ :queries {:list "SELECT b.*, p.codigo || ' - ' || p.nombre AS producto_nombre FROM bom b LEFT JOIN productos p ON b.producto_id = p.id ORDER BY b.id DESC"
+           :get "SELECT b.*, p.codigo || ' - ' || p.nombre AS producto_nombre FROM bom b LEFT JOIN productos p ON b.producto_id = p.id WHERE b.id = ?"}
+
+ :actions {:new true :edit true :delete true}
+ :subgrids [{:entity :bom_lineas :foreign-key :bom_id
+             :title :entity/bom_lineas :href "/admin/bom_lineas" :icon "bi bi-list-ul"}]}

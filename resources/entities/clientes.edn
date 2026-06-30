@@ -1,0 +1,29 @@
+{:entity :clientes
+ :title :entity/clientes
+ :table "clientes"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 50
+ :menu-icon "bi bi-people"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :clientes/codigo :type :text :required? true}
+          {:id :nombre :label :clientes/nombre :type :text :required? true}
+          {:id :contacto :label :clientes/contacto :type :text}
+          {:id :telefono :label :clientes/telefono :type :text}
+          {:id :email :label :clientes/email :type :email}
+          {:id :direccion :label :clientes/direccion :type :textarea}
+          {:id :activo :label :clientes/activo :type :radio :value "T"
+           :options [{:value "T" :label :common/yes}
+                     {:value "F" :label :common/no}]}]
+
+ :queries {:list "SELECT * FROM clientes ORDER BY id DESC"
+           :get "SELECT * FROM clientes WHERE id = ?"}
+
+ :actions {:new true :edit true :delete true}
+ :subgrids [{:entity :pedidos :foreign-key :cliente_id
+             :title :entity/pedidos :href "/admin/pedidos" :icon "bi bi-cart-check"}]}

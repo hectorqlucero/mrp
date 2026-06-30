@@ -1,0 +1,29 @@
+{:entity :productos
+ :title :entity/productos
+ :table "productos"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 20
+ :menu-icon "bi bi-chair"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :productos/codigo :type :text :required? true}
+          {:id :nombre :label :productos/nombre :type :text :required? true}
+          {:id :descripcion :label :productos/descripcion :type :textarea}
+          {:id :precio_venta :label :productos/precio_venta :type :decimal}
+          {:id :activo :label :productos/activo :type :radio :value "T"
+           :options [{:value "T" :label :common/yes}
+                     {:value "F" :label :common/no}]}]
+
+ :queries {:list "SELECT * FROM productos ORDER BY id DESC"
+           :get "SELECT * FROM productos WHERE id = ?"}
+
+ :actions {:new true :edit true :delete true}
+ :subgrids [{:entity :bom_lineas :foreign-key :bom_id
+             :title :entity/bom_lineas :href "/admin/bom_lineas" :icon "bi bi-list-ul"}
+            {:entity :ordenes_produccion :foreign-key :producto_id
+             :title :entity/ordenes_produccion :href "/admin/ordenes_produccion" :icon "bi bi-tools"}]}

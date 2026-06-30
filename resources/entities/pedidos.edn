@@ -1,0 +1,35 @@
+{:entity :pedidos
+ :title :entity/pedidos
+ :table "pedidos"
+ :connection :default
+ :rights ["U" "A" "S"]
+ :mode :parameter-driven
+ :menu-order 60
+ :menu-icon "bi bi-cart-check"
+ :menu-category :MRP
+ :menu-category-label :mrp/title
+ :audit? true
+
+ :fields [{:id :id :label "ID" :type :hidden}
+          {:id :codigo :label :pedidos/codigo :type :text :required? true}
+          {:id :cliente_id :label :pedidos/cliente_id :type :fk :required? true
+           :fk :clientes :fk-field [:codigo :nombre] :fk-separator " - "
+           :fk-sort [:codigo] :hidden-in-grid? true}
+          {:id :cliente_nombre :label :pedidos/cliente_id :type :text :grid-only? true}
+          {:id :fecha :label :pedidos/fecha :type :date}
+          {:id :fecha_entrega :label :pedidos/fecha_entrega :type :date}
+          {:id :estado :label :pedidos/estado :type :select :required? true :value "pendiente"
+           :options [{:value "pendiente" :label :status/pendiente}
+                     {:value "confirmado" :label :status/confirmado}
+                     {:value "en_produccion" :label :status/en_produccion}
+                     {:value "enviado" :label :status/enviado}
+                     {:value "entregado" :label :status/entregado}
+                     {:value "cancelado" :label :status/cancelado}]}
+          {:id :notas :label :pedidos/notas :type :textarea}]
+
+ :queries {:list "SELECT p.*, c.codigo || ' - ' || c.nombre AS cliente_nombre FROM pedidos p LEFT JOIN clientes c ON p.cliente_id = c.id ORDER BY p.id DESC"
+           :get "SELECT p.*, c.codigo || ' - ' || c.nombre AS cliente_nombre FROM pedidos p LEFT JOIN clientes c ON p.cliente_id = c.id WHERE p.id = ?"}
+
+ :actions {:new true :edit true :delete true}
+ :subgrids [{:entity :pedido_lineas :foreign-key :pedido_id
+             :title :entity/pedido_lineas :href "/admin/pedido_lineas" :icon "bi bi-list-ul"}]}
