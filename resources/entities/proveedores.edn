@@ -8,7 +8,8 @@
  :menu-icon "bi bi-truck"
  :menu-category :MRP
  :menu-category-label :mrp/title
- :audit? true
+  :audit? true
+  :hooks {:before-delete :mrp.hooks.proveedores/before-delete}
 
  :fields [{:id :id :label "ID" :type :hidden}
           {:id :codigo :label :proveedores/codigo :type :text :required? true}

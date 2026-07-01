@@ -11,7 +11,7 @@
 (defn after-save
   [data _result]
   (when (:_update-stock data)
-    (let [oc-id (or (:id data) _result)
+    (let [oc-id (if (pos? (crud/crud-fix-id (:id data))) (:id data) _result)
           lines (crud/Query ["SELECT material_id, cantidad FROM oc_lineas WHERE oc_id = ?" oc-id])]
       (doseq [line lines]
         (crud/Query! ["UPDATE materiales SET stock_actual = COALESCE(stock_actual, 0) + ? WHERE id = ?"

@@ -8,7 +8,8 @@
  :menu-icon "bi bi-people"
  :menu-category :MRP
  :menu-category-label :mrp/title
- :audit? true
+  :audit? true
+  :hooks {:before-delete :mrp.hooks.clientes/before-delete}
 
  :fields [{:id :id :label "ID" :type :hidden}
           {:id :codigo :label :clientes/codigo :type :text :required? true}

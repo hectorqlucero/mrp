@@ -8,7 +8,8 @@
  :menu-icon "bi bi-chair"
  :menu-category :MRP
  :menu-category-label :mrp/title
- :audit? true
+  :audit? true
+  :hooks {:before-delete :mrp.hooks.productos/before-delete}
 
  :fields [{:id :id :label "ID" :type :hidden}
           {:id :codigo :label :productos/codigo :type :text :required? true}
