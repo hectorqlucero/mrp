@@ -5,7 +5,7 @@
  :rights ["U" "A" "S"]
  :mode :parameter-driven
  :menu-order 20
- :menu-icon "bi bi-chair"
+ :menu-icon "bi bi-box"
  :menu-category :MRP
  :menu-category-label :mrp/title
   :audit? true
