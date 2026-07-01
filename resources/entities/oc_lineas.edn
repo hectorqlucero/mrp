@@ -8,7 +8,10 @@
  :menu-icon "bi bi-list-ul"
  :menu-category :MRP
  :menu-category-label :mrp/title
- :audit? true
+  :audit? true
+  :hooks {:before-save :mrp.hooks.oc-lineas/before-save
+          :after-save  :mrp.hooks.oc-lineas/after-save
+          :before-delete :mrp.hooks.oc-lineas/before-delete}
 
  :fields [{:id :id :label "ID" :type :hidden}
           {:id :oc_id :label :oc_lineas/oc_id :type :fk

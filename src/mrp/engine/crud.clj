@@ -197,6 +197,18 @@
                (:before-delete hooks))
       (execute-hook (:before-delete hooks) {:id id}))
 
+    ;; Delete child records first to avoid FK constraint violations
+    (doseq [subgrid (:subgrids config)]
+      (let [child-entity (:entity subgrid)
+            child-fk (:foreign-key subgrid)
+            child-cfg (try (config/get-entity-config child-entity)
+                           (catch Exception _ nil))]
+        (when child-cfg
+          (try
+            (crud/Delete (:table child-cfg) [(str (name child-fk) " = ?") id] :conn connection)
+            (catch Exception e
+              (println "[WARN] Error deleting child records for" child-entity ":" (.getMessage e)))))))
+
     (let [result (try
                    (crud/build-form-delete table id :conn connection
                                            :file-fields (vec file-fields))
@@ -204,27 +216,6 @@
                      (println "[ERROR] delete-record failed:" (.getMessage e))
                      {:success false :error (.getMessage e)}))
           success? (or (= true result) (:success result))]
-
-      (when success?
-        ;; Clean up child entity orphaned files (replaces vendor introspection cascade)
-        (try
-          (doseq [subgrid (:subgrids config)]
-            (let [child-entity (:entity subgrid)
-                  child-fk (:foreign-key subgrid)
-                  child-cfg (try (config/get-entity-config child-entity)
-                                 (catch Exception _ nil))
-                  child-file-fields (when child-cfg
-                                      (map :id (filter #(file-types (:type %)) (:fields child-cfg))))]
-              (when (seq child-file-fields)
-                (doseq [ff child-file-fields]
-                  (let [rows (crud/Query [(str "SELECT " (name ff) " FROM " (:table child-cfg)
-                                               " WHERE " (name child-fk) " = ?") id]
-                                         :conn connection)]
-                    (doseq [row rows]
-                      (when-let [fname (get row ff)]
-                        (crud/safe-delete-upload! fname))))))))
-          (catch Exception e
-            (println "[WARN] Error cleaning up child entity files:" (.getMessage e)))))
 
       (when (and success?
                  (not (:skip-hooks? opts))
