@@ -8,19 +8,23 @@
  :menu-icon "bi bi-list-ul"
  :menu-category :MRP
  :menu-category-label :mrp/title
-  :audit? true
-  :hooks {:before-save :mrp.hooks.oc-lineas/before-save
-          :after-save  :mrp.hooks.oc-lineas/after-save
-          :before-delete :mrp.hooks.oc-lineas/before-delete}
+ :audit? true
+ :hooks {:before-save :mrp.hooks.oc-lineas/before-save
+         :after-save  :mrp.hooks.oc-lineas/after-save
+         :before-delete :mrp.hooks.oc-lineas/before-delete}
 
  :fields [{:id :id :label "ID" :type :hidden}
           {:id :oc_id :label :oc_lineas/oc_id :type :fk
            :fk :ordenes_compra :fk-field [:codigo] :fk-sort [:codigo]
+           :fk-can-create? true
            :hidden-in-grid? true}
           {:id :oc_codigo :label :oc_lineas/oc_id :type :text :grid-only? true}
           {:id :material_id :label :oc_lineas/material_id :type :fk :required? true
            :fk :materiales :fk-field [:codigo :nombre] :fk-separator " - "
-           :fk-sort [:codigo]}
+           :fk-sort [:codigo]
+           :fk-can-create? true
+           :hidden-in-grid? true}
+          {:id :material_nombre :label "Material" :grid-only? true}
           {:id :cantidad :label :oc_lineas/cantidad :type :decimal :required? true}
           {:id :precio_unitario :label :oc_lineas/precio_unitario :type :decimal}
           {:id :notas :label :oc_lineas/notas :type :textarea}]
