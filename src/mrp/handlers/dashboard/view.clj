@@ -51,7 +51,7 @@
 (defn- so-row
   [o]
   [:tr
-   [:td [:a {:href (str "/admin/pedidos/edit/" (:id o))} (:codigo o)]]
+   [:td [:a {:href (str "/admin/pedidos/" (:id o))} (:codigo o)]]
    [:td (:cliente o)]
    [:td (:fecha o)]
    [:td (status-badge (:estado o))]])
@@ -59,7 +59,7 @@
 (defn- po-row
   [o]
   [:tr
-   [:td [:a {:href (str "/admin/ordenes_compra/edit/" (:id o))} (:codigo o)]]
+   [:td [:a {:href (str "/admin/ordenes_compra/" (:id o))} (:codigo o)]]
    [:td (:proveedor o)]
    [:td (:fecha o)]
    [:td (status-badge (:estado o))]])
@@ -67,7 +67,7 @@
 (defn- alert-row
   [m]
   [:tr
-   [:td [:a {:href (str "/admin/materiales/edit/" (:id m))} (:codigo m)]]
+   [:td [:a {:href (str "/admin/materiales/" (:id m))} (:codigo m)]]
    [:td (:nombre m)]
    [:td (:stock_actual m)]
    [:td (:stock_minimo m)]
@@ -78,7 +78,7 @@
 (defn- prod-row
   [op]
   [:tr
-   [:td [:a {:href (str "/admin/ordenes_produccion/edit/" (:id op))} (:codigo op)]]
+   [:td [:a {:href (str "/admin/ordenes_produccion/" (:id op))} (:codigo op)]]
    [:td (:producto op)]
    [:td (:cantidad op)]
    [:td (status-badge (:estado op))]])
@@ -124,38 +124,37 @@
 (defn- production-panel
   [{:keys [op-pendientes produccion_planificada produccion_en_proceso op-completadas] :as stats}]
   (list
-    [:div.card.border-0.shadow-sm.mb-4
-     [:div.card-header.bg-white.d-flex.justify-content-between.align-items-center
-      [:h5.mb-0 (i18n/tr :dashboard/production_status)]
-      [:span.badge.bg-success (+ produccion_planificada produccion_en_proceso)]]
-     [:div.card-body
-      [:div.d-flex.justify-content-around.text-center.mb-3
-       [:div [:h3.text-info produccion_planificada] [:small.text-muted (i18n/tr :status/planificada)]]
-       [:div [:h3.text-warning produccion_en_proceso] [:small.text-muted (i18n/tr :status/en_proceso)]]
-       [:div [:h3.text-success (count op-completadas)] [:small.text-muted (i18n/tr :status/completada)]]]
-      (when (seq op-pendientes)
+   [:div.card.border-0.shadow-sm.mb-4
+    [:div.card-header.bg-white.d-flex.justify-content-between.align-items-center
+     [:h5.mb-0 (i18n/tr :dashboard/production_status)]
+     [:span.badge.bg-success (+ produccion_planificada produccion_en_proceso)]]
+    [:div.card-body
+     [:div.d-flex.justify-content-around.text-center.mb-3
+      [:div [:h3.text-info produccion_planificada] [:small.text-muted (i18n/tr :status/planificada)]]
+      [:div [:h3.text-warning produccion_en_proceso] [:small.text-muted (i18n/tr :status/en_proceso)]]
+      [:div [:h3.text-success (count op-completadas)] [:small.text-muted (i18n/tr :status/completada)]]]
+     (when (seq op-pendientes)
+       [:div.table-responsive
+        [:table.table.table-hover.mb-0
+         [:thead.table-light
+          [:tr
+           [:th (i18n/tr :ordenes_produccion/codigo)]
+           [:th (i18n/tr :productos/nombre)]
+           [:th (i18n/tr :ordenes_produccion/cantidad)]
+           [:th (i18n/tr :ordenes_produccion/estado)]]]
+         [:tbody (map prod-row op-pendientes)]]])
+     (when (seq op-completadas)
+       [:div.mt-3
+        [:h6.text-success.mb-2 (i18n/tr :dashboard/completed_production)]
         [:div.table-responsive
-         [:table.table.table-hover.mb-0
+         [:table.table.table-sm.table-hover.mb-0
           [:thead.table-light
            [:tr
             [:th (i18n/tr :ordenes_produccion/codigo)]
             [:th (i18n/tr :productos/nombre)]
             [:th (i18n/tr :ordenes_produccion/cantidad)]
             [:th (i18n/tr :ordenes_produccion/estado)]]]
-          [:tbody (map prod-row op-pendientes)]]])
-      (when (seq op-completadas)
-        [:div.mt-3
-         [:h6.text-success.mb-2 (i18n/tr :dashboard/completed_production)]
-         [:div.table-responsive
-          [:table.table.table-sm.table-hover.mb-0
-           [:thead.table-light
-            [:tr
-             [:th (i18n/tr :ordenes_produccion/codigo)]
-             [:th (i18n/tr :productos/nombre)]
-             [:th (i18n/tr :ordenes_produccion/cantidad)]
-             [:th (i18n/tr :ordenes_produccion/estado)]]]
-             [:tbody (map prod-row op-completadas)]]]])
-    ]]))
+          [:tbody (map prod-row op-completadas)]]]])]]))
 
 (defn main
   [title stats]
